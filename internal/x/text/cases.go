@@ -45,18 +45,11 @@ func (c *Caser) Identifierize(s string) string {
 
 	ident := sb.String()
 
-	rIdent := []rune(ident)
-	if len(rIdent) > 0 {
-		if !unicode.IsLetter(rIdent[0]) || isNoneCaseSensitiveLetter(rIdent[0]) {
-			ident = "A" + ident
-		}
+	if !unicode.IsLetter(rune(ident[0])) {
+		ident = "A" + ident
 	}
 
 	return ident
-}
-
-func isNoneCaseSensitiveLetter(r rune) bool {
-	return !unicode.IsUpper(r) && !unicode.IsLower(r)
 }
 
 func (c *Caser) Capitalize(s string) string {
@@ -70,9 +63,7 @@ func (c *Caser) Capitalize(s string) string {
 		}
 	}
 
-	r := []rune(s)
-
-	return string(unicode.ToUpper(r[0])) + string(r[1:])
+	return strings.ToUpper(s[0:1]) + s[1:]
 }
 
 func splitIdentifierByCaseAndSeparators(s string) []string {
@@ -86,35 +77,31 @@ func splitIdentifierByCaseAndSeparators(s string) []string {
 		stateNothing state = iota
 		stateLower
 		stateUpper
-		stateNonCase
 		stateNumber
 		stateDelimiter
 	)
 
-	var result [][]rune
+	var result []string
 
 	currState, j := stateNothing, 0
 
-	runes := []rune(s)
-
-	for i, r := range runes {
+	for i := 0; i < len(s); i++ {
 		var nextState state
 
+		c := rune(s[i])
+
 		switch {
-		case unicode.IsLower(r):
+		case unicode.IsLower(c):
 			nextState = stateLower
 
-		case unicode.IsUpper(r):
+		case unicode.IsUpper(c):
 			nextState = stateUpper
 
-		case unicode.IsNumber(r):
+		case unicode.IsNumber(c):
 			nextState = stateNumber
 
-		case !unicode.IsLetter(r): // Non-letter characters.
+		default:
 			nextState = stateDelimiter
-
-		default: // Non-case sensitive letters.
-			nextState = stateNonCase
 		}
 
 		if nextState != currState {
@@ -122,7 +109,7 @@ func splitIdentifierByCaseAndSeparators(s string) []string {
 				j = i
 			} else if !(currState == stateUpper && nextState == stateLower) {
 				if i > j {
-					result = append(result, runes[j:i])
+					result = append(result, s[j:i])
 				}
 				j = i
 			}
@@ -131,17 +118,8 @@ func splitIdentifierByCaseAndSeparators(s string) []string {
 		}
 	}
 
-	if currState != stateDelimiter && len(runes)-j > 0 {
-		result = append(result, runes[j:])
-	}
-
-	return runesToStrings(result)
-}
-
-func runesToStrings(runes [][]rune) []string {
-	result := make([]string, len(runes))
-	for i, r := range runes {
-		result[i] = string(r)
+	if currState != stateDelimiter && len(s)-j > 0 {
+		result = append(result, s[j:])
 	}
 
 	return result
