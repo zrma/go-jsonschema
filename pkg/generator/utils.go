@@ -3,8 +3,8 @@ package generator
 import (
 	"sort"
 
-	"github.com/atombender/go-jsonschema/pkg/codegen"
-	"github.com/atombender/go-jsonschema/pkg/schemas"
+	"github.com/zrma/go-jsonschema/pkg/codegen"
+	"github.com/zrma/go-jsonschema/pkg/schemas"
 )
 
 func sortPropertiesByName(props map[string]*schemas.Type) []string {

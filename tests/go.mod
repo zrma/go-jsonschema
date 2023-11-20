@@ -1,16 +1,16 @@
-module github.com/atombender/go-jsonschema/tests
+module github.com/zrma/go-jsonschema/tests
 
 go 1.21
 
 replace (
-	github.com/atombender/go-jsonschema => ../
-	github.com/atombender/go-jsonschema/tests/helpers/other => ./helpers/other
+	github.com/zrma/go-jsonschema => ../
+	github.com/zrma/go-jsonschema/tests/helpers/other => ./helpers/other
 )
 
 require (
-	github.com/atombender/go-jsonschema v0.0.0-00010101000000-000000000000
-	github.com/atombender/go-jsonschema/tests/helpers/other v0.0.0-00010101000000-000000000000
 	github.com/magiconair/properties v1.8.7
+	github.com/zrma/go-jsonschema v0.0.0-00010101000000-000000000000
+	github.com/zrma/go-jsonschema/tests/helpers/other v0.0.0-00010101000000-000000000000
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -22,7 +22,7 @@ require (
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/sanity-io/litter v1.5.5 // indirect
-	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
-	golang.org/x/sys v0.13.0 // indirect
+	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa // indirect
+	golang.org/x/sys v0.14.0 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 )

@@ -67,7 +67,7 @@ linters-settings:
     sections:
       - standard # Standard section: captures all standard packages.
       - default # Default section: contains all imports that could not be matched to another section type.
-      - prefix(github.com/atombender) # Custom section: groups all imports with the specified Prefix.
+      - prefix(github.com/zrma) # Custom section: groups all imports with the specified Prefix.
     skip-generated: true
     custom-order: true
   godot:
@@ -81,7 +81,7 @@ linters-settings:
     lang-version: "1.21"
     extra-rules: true
   goimports:
-    local-prefixes: github.com/atombender
+    local-prefixes: github.com/zrma
   govet:
     check-shadowing: true
   grouper:
@@ -446,7 +446,7 @@ issues:
   #
   # Default: []
   exclude:
-    - "local replacement are not allowed: github.com/atombender/go-jsonschema/tests/data"
+    - "local replacement are not allowed: github.com/zrma/go-jsonschema/tests/data"
 
   # Excluding configuration per-path, per-linter, per-text and per-source
   exclude-rules:
