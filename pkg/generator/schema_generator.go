@@ -223,6 +223,61 @@ func (g *schemaGenerator) generateDeclaredType(t *schemas.Type, scope nameScope)
 		}
 	}
 
+	if len(t.AnyOf) > 0 {
+		var anyOfTypes []*schemas.Type
+
+		for i, typ := range t.AnyOf {
+			typ.SetSubSchemaTypeElem()
+
+			var (
+				gen codegen.Type
+				err error
+			)
+			if len(typ.Enum) > 0 {
+				gen, err = g.generateEnumType(typ, scope.add(fmt.Sprintf("_%d", i)))
+				if err != nil {
+					return nil, err
+				}
+			} else if typ.Ref != "" {
+				gen, err = g.generateReferencedType(typ.Ref)
+				if err != nil {
+					return nil, err
+				}
+
+				gen1, ok := gen.(*codegen.NamedType)
+				if !ok {
+					return nil, fmt.Errorf("%w: got %T", errExpectedNamedType, gen)
+				}
+
+				if gen1.Decl.SchemaType == nil {
+					continue
+				}
+
+				gen, err = g.generateType(gen1.Decl.SchemaType, scope.add(fmt.Sprintf("_%d", i)))
+				if err != nil {
+					return nil, err
+				}
+			} else {
+				gen, err = g.generateTypeInline(typ, scope.add(fmt.Sprintf("_%d", i)))
+				if err != nil {
+					return nil, err
+				}
+			}
+
+			if isNamedType(gen) {
+				anyOfTypes = append(anyOfTypes, gen.(*codegen.NamedType).Decl.SchemaType)
+			}
+		}
+
+		for _, e := range anyOfTypes {
+			if e == nil {
+				continue
+			}
+
+			t.Enum = append(t.Enum, e.Enum...)
+		}
+	}
+
 	if t.Enum != nil {
 		return g.generateEnumType(t, scope)
 	}
@@ -499,6 +554,16 @@ func (g *schemaGenerator) generateStructType(t *schemas.Type, scope nameScope) (
 
 	var structType codegen.StructType
 
+	for i, typ := range t.AllOf {
+		typ.SetSubSchemaTypeElem()
+		gen, err := g.generateTypeInline(typ, scope.add(fmt.Sprintf("_%d", i)))
+		if err != nil {
+			return nil, err
+		}
+
+		addNamedType(&structType, gen)
+	}
+
 	for _, name := range sortedKeys(t.Properties) {
 		prop := t.Properties[name]
 		isRequired := requiredNames[name]
@@ -577,6 +642,30 @@ func (g *schemaGenerator) generateStructType(t *schemas.Type, scope nameScope) (
 	}
 
 	return &structType, nil
+}
+
+func addNamedType(dest *codegen.StructType, target codegen.Type) {
+	if !isNamedType(target) {
+		return
+	}
+
+	switch x := target.(type) {
+	case *codegen.NamedType:
+		if typ, ok := x.Decl.Type.(*codegen.StructType); ok {
+			for _, f := range typ.Fields {
+				dest.AddField(f)
+			}
+		}
+
+	case *codegen.PointerType:
+		if typ, ok := x.Type.(*codegen.NamedType); ok {
+			if typ1, ok := typ.Decl.Type.(*codegen.StructType); ok {
+				for _, f := range typ1.Fields {
+					dest.AddField(f)
+				}
+			}
+		}
+	}
 }
 
 func (g *schemaGenerator) defaultPropertyValue(prop *schemas.Type) any {
