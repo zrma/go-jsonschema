@@ -1,4 +1,4 @@
-github.com/atombender/go-jsonschema/tests/data v0.0.0-20231003003002-2b73c089a581/go.mod h1:kLoRQLRVy+GT9/PG2e3u31DPvDmtFEn7pX6FItvbqlA=
+github.com/zrma/go-jsonschema/tests/data v0.0.0-20231003003002-2b73c089a581/go.mod h1:kLoRQLRVy+GT9/PG2e3u31DPvDmtFEn7pX6FItvbqlA=
 golang.org/x/mod v0.13.0/go.mod h1:hTbmBsO62+eylJbnUtE2MGJUyE7QWk4xUqPFrRgJ+7c=
 golang.org/x/mod v0.14.0/go.mod h1:hTbmBsO62+eylJbnUtE2MGJUyE7QWk4xUqPFrRgJ+7c=
 golang.org/x/net v0.15.0/go.mod h1:idbUs1IY1+zTqbi8yxTbhexhEEk5ur9LInksu6HrEpk=

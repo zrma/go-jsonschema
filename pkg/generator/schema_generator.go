@@ -6,9 +6,9 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 
-	"github.com/atombender/go-jsonschema/pkg/cmputil"
-	"github.com/atombender/go-jsonschema/pkg/codegen"
-	"github.com/atombender/go-jsonschema/pkg/schemas"
+	"github.com/zrma/go-jsonschema/pkg/cmputil"
+	"github.com/zrma/go-jsonschema/pkg/codegen"
+	"github.com/zrma/go-jsonschema/pkg/schemas"
 )
 
 type schemaGenerator struct {
@@ -810,7 +810,7 @@ func (g *schemaGenerator) generateEnumType(t *schemas.Type, scope nameScope) (co
 
 	if !g.config.OnlyModels {
 		valueConstant := &codegen.Var{
-			Name:  "enumValues_" + enumDecl.Name,
+			Name:  schemas.PrefixEnumValue + enumDecl.Name,
 			Value: t.Enum,
 		}
 		g.output.file.Package.AddDecl(valueConstant)
@@ -826,11 +826,13 @@ func (g *schemaGenerator) generateEnumType(t *schemas.Type, scope nameScope) (co
 			if wrapInStruct {
 				g.output.file.Package.AddDecl(&codegen.Method{
 					Impl: formatter.enumMarshal(enumDecl),
+					Name: enumDecl.GetName() + "_enum",
 				})
 			}
 
 			g.output.file.Package.AddDecl(&codegen.Method{
 				Impl: formatter.enumUnmarshal(enumDecl, enumType, valueConstant, wrapInStruct),
+				Name: enumDecl.GetName() + "_enum_unmarshal",
 			})
 		}
 	}

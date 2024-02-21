@@ -461,7 +461,7 @@ issues:
   #
   # Default: []
   exclude:
-    - "local replacement are not allowed: github.com/atombender/go-jsonschema/tests/data"
+    - "local replacement are not allowed: github.com/zrma/go-jsonschema/tests/data"
   # Excluding configuration per-path, per-linter, per-text and per-source
   exclude-rules:
     # Exclude some linters from running on tests files.

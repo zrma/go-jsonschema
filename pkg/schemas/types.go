@@ -1,5 +1,7 @@
 package schemas
 
+import "strings"
+
 const (
 	TypeNameString  = "string"
 	TypeNameArray   = "array"
@@ -8,6 +10,7 @@ const (
 	TypeNameObject  = "object"
 	TypeNameBoolean = "boolean"
 	TypeNameNull    = "null"
+	PrefixEnumValue = "enumValues_"
 )
 
 func IsPrimitiveType(t string) bool {
@@ -32,4 +35,12 @@ func isPrimitiveTypeList(types []*Type) bool {
 	}
 
 	return true
+}
+
+func CleanNameForSorting(name string) string {
+	if strings.HasPrefix(name, PrefixEnumValue) {
+		return strings.TrimPrefix(name, PrefixEnumValue) + "_enumValues" // Append a string for sorting properly.
+	}
+
+	return name
 }
